@@ -1,20 +1,53 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import SignUpScreen from './src/auth/signUp';
 
-export default function App() {
+const App = () => {
+  const [screen, setScreen] = useState('signup'); 
+
+  const onPressLogin = () => setScreen('login');
+  const onPressSignUp = () => setScreen('signup');
+
+  if (screen === 'login') {
+    return (
+      <SafeAreaView style={appStyles.safeArea}>
+        <View style={appStyles.placeholder}>
+          <Text style={appStyles.placeholderText}>Login Screen</Text>
+          <TouchableOpacity onPress={onPressSignUp}>
+            <Text style={appStyles.link}>Don't have an account? Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={appStyles.safeArea}>
+      <SignUpScreen onPressLogin={onPressLogin} />
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
+const appStyles = StyleSheet.create({
+  safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  placeholder: {
+    flex: 1,
+    backgroundColor: '#756C6C',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  placeholderText: {
+    fontWeight: 'bold',
+    fontSize: 50,
+    color: '#333232',
+    marginBottom: 20,
+  },
+  link: {
+    color: 'white',
+    fontSize: 13,
+  },
 });
+
+export default App;
