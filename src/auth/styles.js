@@ -2,10 +2,11 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#756C6C',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 40,
   },
   title: {
     fontWeight: 'bold',
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: 'center',
     padding: 20,
-  },    
+  },
   inputText: {
     height: 50,
     color: 'black',
@@ -52,6 +53,26 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     alignSelf: 'flex-start',
     marginLeft: '10%',
+  },
+  githubCard: {
+    width: '80%',
+    backgroundColor: '#494242',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  githubCardTitle: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 13,
+    marginBottom: 10,
+  },
+  jsonText: {
+    color: '#c2bfbf',
+    fontSize: 11,
+    fontFamily: 'monospace',
+    lineHeight: 18,
   },
 });
 

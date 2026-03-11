@@ -4,7 +4,7 @@ import SignUpScreen from './src/auth/signUp';
 
 const App = () => {
   const [screen, setScreen] = useState('signup'); 
-
+  
   const onPressLogin = () => setScreen('login');
   const onPressSignUp = () => setScreen('signup');
 

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Alert,} from 'react-native';
+  View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator,
+} from 'react-native';
+import axios from 'axios';
 import styles from './styles';
 
 const SignUpScreen = ({ onPressLogin }) => {
@@ -12,28 +14,52 @@ const SignUpScreen = ({ onPressLogin }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [githubUser, setGithubUser] = useState(null);
 
   const validate = () => {
-  const e = {};
+    const e = {};
 
-  if (!state.fullName.trim()) e.fullName = 'Full name is required';
+    if (!state.fullName.trim()) e.fullName = 'Full name is required';
 
-  if (!state.email.includes('@') || !state.email.includes('.')) 
-    e.email = 'Enter a valid email';
+    if (!state.email.includes('@') || !state.email.includes('.'))
+      e.email = 'Enter a valid email';
 
-  if (state.password.length < 6) e.password = 'Password must be at least 6 characters';
+    if (state.password.length < 6) e.password = 'Password must be at least 6 characters';
 
-  if (state.confirmPassword !== state.password) 
-    e.confirmPassword = 'Passwords do not match';
+    if (state.confirmPassword !== state.password)
+      e.confirmPassword = 'Passwords do not match';
 
-  return e;
-};
+    return e;
+  };
 
-  const onPressSignUp = () => {
+  const fetchGithubUser = async () => {
+    try {
+      const response = await axios.get('https://api.github.com/users/1');
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to fetch GitHub user data.');
+    }
+  };
+
+  const onPressSignUp = async () => {
     const e = validate();
     setErrors(e);
+
     if (Object.keys(e).length === 0) {
-      Alert.alert('Success', `Welcome, ${state.fullName}! Your account has been created.`);
+      setLoading(true);
+      try {
+        const userData = await fetchGithubUser();
+        setGithubUser(userData);
+        Alert.alert(
+          'Success',
+          `Welcome, ${state.fullName}! Your account has been created.\n\nGitHub User Fetched: ${userData.login} (ID: ${userData.id})`
+        );
+      } catch (error) {
+        Alert.alert('Network Error', error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -91,9 +117,26 @@ const SignUpScreen = ({ onPressLogin }) => {
         <Text style={styles.errorText}>{errors.confirmPassword}</Text>
       )}
 
-      <TouchableOpacity style={styles.signUpBtn} onPress={onPressSignUp}>
-        <Text style={styles.signUpBtnText}>SIGN UP</Text>
+      <TouchableOpacity
+        style={[styles.signUpBtn, loading && { opacity: 0.7 }]}
+        onPress={onPressSignUp}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.signUpBtnText}>SIGN UP</Text>
+        )}
       </TouchableOpacity>
+
+      {githubUser && (
+        <View style={styles.githubCard}>
+          <Text style={styles.githubCardTitle}>GitHub User Fetched</Text>
+          <Text style={styles.githubCardText}>Login: {githubUser.login}</Text>
+          <Text style={styles.githubCardText}>ID: {githubUser.id}</Text>
+          <Text style={styles.githubCardText}>Type: {githubUser.type}</Text>
+        </View>
+      )}
 
       <TouchableOpacity onPress={onPressLogin}>
         <Text style={styles.loginText}>Already have an account? Login</Text>
