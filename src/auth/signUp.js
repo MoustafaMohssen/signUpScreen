@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator,
+  View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, ScrollView,
 } from 'react-native';
 import axios from 'axios';
 import styles from './styles';
 
-const SignUpScreen = ({ onPressLogin }) => {
+// Simple but more robust email regex
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const SignUpScreen = ({ onPressLogin, onPressGoHome }) => {
   const [state, setState] = useState({
     fullName: '',
     email: '',
@@ -22,7 +25,8 @@ const SignUpScreen = ({ onPressLogin }) => {
 
     if (!state.fullName.trim()) e.fullName = 'Full name is required';
 
-    if (!state.email.includes('@') || !state.email.includes('.'))
+    // FIX: replaced naive .includes() check with a proper regex
+    if (!EMAIL_REGEX.test(state.email))
       e.email = 'Enter a valid email';
 
     if (state.password.length < 6) e.password = 'Password must be at least 6 characters';
@@ -53,7 +57,8 @@ const SignUpScreen = ({ onPressLogin }) => {
         setGithubUser(userData);
         Alert.alert(
           'Success',
-          `Welcome, ${state.fullName}! Your account has been created.\n\nGitHub User Fetched: ${userData.login} (ID: ${userData.id})`
+          `Welcome, ${state.fullName}! Your account has been created.\n\nGitHub User Fetched: ${userData.login} (ID: ${userData.id})`,
+          [{ text: 'Go to Home', onPress: () => onPressGoHome && onPressGoHome() }]
         );
       } catch (error) {
         Alert.alert('Network Error', error.message);
@@ -63,8 +68,9 @@ const SignUpScreen = ({ onPressLogin }) => {
     }
   };
 
+  // FIX: changed View → ScrollView to match LoginScreen and avoid keyboard overlap
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
 
       <View style={styles.inputView}>
@@ -141,7 +147,7 @@ const SignUpScreen = ({ onPressLogin }) => {
       <TouchableOpacity onPress={onPressLogin}>
         <Text style={styles.loginText}>Already have an account? Login</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

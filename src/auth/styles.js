@@ -27,6 +27,16 @@ const styles = StyleSheet.create({
     height: 50,
     color: 'black',
   },
+  forgotBtn: {
+    width: '80%',
+    alignItems: 'flex-end',
+    marginTop: -10,
+    marginBottom: 20,
+  },
+  forgotText: {
+    color: '#fff',
+    fontSize: 11,
+  },
   loginText: {
     color: 'white',
     fontSize: 11,
@@ -67,6 +77,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 13,
     marginBottom: 10,
+  },
+  githubCardText: {
+    color: '#c2bfbf',
+    fontSize: 12,
+    marginBottom: 4,
   },
   jsonText: {
     color: '#c2bfbf',
